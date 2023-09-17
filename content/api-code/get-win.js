@@ -26,9 +26,41 @@ function _getPlayerState(gameState, playerMove) {
   return gameState.substring(0, playerMove) + '2' + gameState.substring(playerMove + 1)
 }
 
-function _getComputerState(playerState) {
-  var computerMove = playerState.indexOf('0')
-  return playerState.substring(0, computerMove) + '1' + playerState.substring(computerMove + 1)
+function _didPlayerWin(playerState) {
+  var row1 = playerState.substring(0, 3)
+  var row2 = playerState.substring(3, 6)
+  var row3 = playerState.substring(6, 9)
+  var rows = [row1, row2, row3]
+
+  // row
+  if (rows.includes('222')) {
+    return true
+  }
+
+  // column
+  [0, 1, 2].forEach(index => {
+    if (rows.every((row) => row.charAt(index) == '2')) {
+      return true
+    }
+  })
+
+  // diagonal
+  if (row2.charAt(1) == '2') {
+    if (
+      (
+        row1.charAt(0) == '2' &&
+        row3.charAt(2) == '2'
+      ) || (
+        row1.charAt(2) == '2' &&
+        row3.charAt(0) == '2'
+      )
+    ) {
+      return true
+    }
+  }
+
+  // player did not win
+  return false
 }
 
 function handler(event) {
@@ -39,9 +71,10 @@ function handler(event) {
 
   var computerState = (
     _constantTimeEquals(querystring.signature.value, _calculateDigest(gameState)) &&
-    gameState.charAt(playerMove) == '0'
+    gameState.charAt(playerMove) == '0' &&
+    _didPlayerWin(_getPlayerState(gameState, playerMove))
   ) ?
-    _getComputerState(_getPlayerState(gameState, playerMove))
+    'win'
     :
     'foul'
 
