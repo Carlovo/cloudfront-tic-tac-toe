@@ -9,3 +9,8 @@ module "cloudfront_api" {
     { signing_key = var.signing_key }
   )
 }
+
+module "frontend" {
+  source      = "github.com/Carlovo/cloudfront-s3"
+  bucket_name = local.frontend_bucket_name
+}

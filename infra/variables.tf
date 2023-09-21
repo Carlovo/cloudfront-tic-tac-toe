@@ -1,6 +1,8 @@
 locals {
-  content_path  = "${path.module}/../content/"
-  api_code_path = "${local.content_path}api-code/"
+  content_path         = "${path.module}/../content/"
+  api_code_path        = "${local.content_path}api-code/"
+  frontend_bucket_name = "frontend${var.identifier}"
+
   api_files_to_ids = {
     for api_file in fileset(local.api_code_path, "*") :
     api_file => "${split(".", api_file)[0]}${var.identifier}"
